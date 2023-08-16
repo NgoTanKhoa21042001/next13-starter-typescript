@@ -1,8 +1,18 @@
 "use client";
 import Link from "next/link";
 import "@/styles/app.css";
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("http://localhost:8000/blogs");
+      const data = await res.json();
+      console.log(data);
+    };
+    fetchData();
+  }, []);
+
   return (
     <main>
       <ul>
