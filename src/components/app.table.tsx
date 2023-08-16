@@ -1,15 +1,28 @@
 "use client";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
+import CreateModal from "./create.modal";
 
 interface IProps {
   blogs: IBlog[];
 }
 const AppTable = (props: IProps) => {
+  const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
+  // Lấy data
   const { blogs } = props;
   return (
     <>
       {" "}
+      <div
+        className="mb-3"
+        style={{ display: "flex", justifyContent: "space-between" }}
+      >
+        <h3>Table Blogs</h3>
+        <Button variant="secondary" onClick={() => setShowModalCreate(true)}>
+          Add new
+        </Button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -36,6 +49,10 @@ const AppTable = (props: IProps) => {
           ))}
         </tbody>
       </Table>
+      <CreateModal
+        showModalCreate={showModalCreate}
+        setShowModalCreate={setShowModalCreate}
+      />
     </>
   );
 };

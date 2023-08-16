@@ -10,6 +10,7 @@ export default function Home() {
   const { data, error, isLoading } = useSWR(
     "http://localhost:8000/blogs",
     fetcher,
+    // ngăn gọi lại data khi chuyển trang (Revalidation)
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
