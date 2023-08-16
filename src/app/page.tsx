@@ -3,6 +3,7 @@ import Link from "next/link";
 import "@/styles/app.css";
 import { useEffect } from "react";
 import useSWR from "swr";
+import AppTable from "@/components/app.table";
 export default function Home() {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -15,16 +16,9 @@ export default function Home() {
       revalidateOnReconnect: false,
     }
   );
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const res = await fetch("http://localhost:8000/blogs");
-  //     const data = await res.json();
-  //     console.log(data);
-  //   };
-  //   fetchData();
-  // }, []);
-  console.log(data);
-
+  if (!data) {
+    return <div>Loading....</div>;
+  }
   return (
     <main>
       <ul>
@@ -41,6 +35,7 @@ export default function Home() {
           <Link href={"/tiktok"}>TikTok</Link>
         </li>
       </ul>
+      <AppTable blogs={data} />
     </main>
   );
 }

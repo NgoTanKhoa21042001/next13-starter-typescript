@@ -22,10 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppHeader />
-        <Container>
-          {children}
-          <AppTable />
-        </Container>
+        <Container>{children}</Container>
         <AppFooter />
       </body>
     </html>
