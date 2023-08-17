@@ -3,12 +3,17 @@ import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import CreateModal from "./create.modal";
+import UpdateModal from "./update.modal";
 
 interface IProps {
   blogs: IBlog[];
 }
 const AppTable = (props: IProps) => {
+  // nhấn edit thì biết đang edit blog nào
+
+  const [blog, setBlog] = useState<IBlog | null>(null);
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
+  const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
   // Lấy data
   const { blogs } = props;
   return (
@@ -33,14 +38,21 @@ const AppTable = (props: IProps) => {
           </tr>
         </thead>
         <tbody>
-          {blogs?.map((blog) => (
-            <tr key={blog.id}>
-              <td>{blog.id}</td>
-              <td>{blog.title}</td>
-              <td>{blog.author}</td>
+          {blogs?.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.title}</td>
+              <td>{item.author}</td>
               <td>
                 <Button>View</Button>
-                <Button variant="warning" className="mx-3">
+                <Button
+                  variant="warning"
+                  className="mx-3"
+                  onClick={() => {
+                    setBlog(item);
+                    setShowModalUpdate(true);
+                  }}
+                >
                   Edit
                 </Button>
                 <Button variant="danger">Delete</Button>
@@ -52,6 +64,12 @@ const AppTable = (props: IProps) => {
       <CreateModal
         showModalCreate={showModalCreate}
         setShowModalCreate={setShowModalCreate}
+      />
+      <UpdateModal
+        showModalUpdate={showModalUpdate}
+        setShowModalUpdate={setShowModalUpdate}
+        blog={blog}
+        setBlog={setBlog}
       />
     </>
   );

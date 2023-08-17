@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -7,16 +7,28 @@ import { ToastContainer, toast } from "react-toastify";
 import { mutate } from "swr";
 
 interface IProps {
-  showModalCreate: boolean;
-  setShowModalCreate: (value: boolean) => void;
+  showModalUpdate: boolean;
+  setShowModalUpdate: (value: boolean) => void;
+  blog: IBlog | null;
+  setBlog: (value: IBlog | null) => void;
 }
 
-function CreateModal(props: IProps) {
-  const { showModalCreate, setShowModalCreate } = props;
+function UpdateModal(props: IProps) {
+  const { showModalUpdate, setShowModalUpdate, blog, setBlog } = props;
+  // dựa vào trường id để biết cần update modal nào
+  const [id, setId] = useState<number>(0);
   const [title, setTitle] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
   const [content, setContent] = useState<string>("");
 
+  useEffect(() => {
+    if (blog && blog.id) {
+      setId(blog.id);
+      setTitle(blog.title);
+      setAuthor(blog.author);
+      setContent(blog.content);
+    }
+  }, [blog]);
   const handleSubmit = () => {
     // validate
     if (!title) {
@@ -33,8 +45,8 @@ function CreateModal(props: IProps) {
     }
 
     /// Api add new
-    fetch("http://localhost:8000/blogs", {
-      method: "POST",
+    fetch(`http://localhost:8000/blogs/${id}`, {
+      method: "PUT",
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
@@ -44,12 +56,12 @@ function CreateModal(props: IProps) {
       .then((res) => res.json())
       .then((res) => {
         if (res) {
-          toast.success("Create new blog succeed");
+          toast.success("Update a blog succeed");
           handleClose();
           // fetch lại data khi ấn save
           mutate("http://localhost:8000/blogs");
         } else {
-          toast.error("Create new blog failed");
+          toast.error("Update new blog failed");
         }
       });
 
@@ -59,12 +71,13 @@ function CreateModal(props: IProps) {
     setTitle("");
     setAuthor("");
     setContent("");
-    setShowModalCreate(false);
+    setBlog(null);
+    setShowModalUpdate(false);
   };
   return (
     <>
       <Modal
-        show={showModalCreate}
+        show={showModalUpdate}
         //   onHide={() => setShowModalCreate(false)}
         onHide={handleClose}
         backdrop="static"
@@ -73,7 +86,7 @@ function CreateModal(props: IProps) {
         size="lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add New A Blog</Modal.Title>
+          <Modal.Title>Update A Blog</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -120,4 +133,4 @@ function CreateModal(props: IProps) {
   );
 }
 
-export default CreateModal;
+export default UpdateModal;
