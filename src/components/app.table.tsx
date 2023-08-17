@@ -6,6 +6,7 @@ import { mutate } from "swr";
 import CreateModal from "./create.modal";
 import UpdateModal from "./update.modal";
 import { ToastContainer, toast } from "react-toastify";
+import Link from "next/link";
 interface IProps {
   blogs: IBlog[];
 }
@@ -65,7 +66,10 @@ const AppTable = (props: IProps) => {
               <td>{item.title}</td>
               <td>{item.author}</td>
               <td>
-                <Button>View</Button>
+                {/* ấn vào view sẽ chuyển trang hiển thị blog có id tương ứng */}
+                <Link href={`blogs/${item.id}`}>
+                  <Button>View</Button>
+                </Link>
                 <Button
                   variant="warning"
                   className="mx-3"
