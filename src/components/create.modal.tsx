@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { ToastContainer, toast } from "react-toastify";
+import { mutate } from "swr";
 
 interface IProps {
   showModalCreate: boolean;
@@ -17,6 +18,20 @@ function CreateModal(props: IProps) {
   const [content, setContent] = useState<string>("");
 
   const handleSubmit = () => {
+    // validate
+    if (!title) {
+      toast.error("Title must be provided");
+      return;
+    }
+    if (!author) {
+      toast.error("Author must be provided");
+      return;
+    }
+    if (!content) {
+      toast.error("Content must be provided");
+      return;
+    }
+
     /// Api add new
     fetch("http://localhost:8000/blogs", {
       method: "POST",
@@ -31,6 +46,7 @@ function CreateModal(props: IProps) {
         if (res) {
           toast.success("Create new blog succeed");
           handleClose();
+          mutate("http://localhost:8000/blogs");
         } else {
           toast.error("Create new blog failed");
         }
