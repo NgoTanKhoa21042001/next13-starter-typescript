@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
+import { mutate } from "swr";
 import CreateModal from "./create.modal";
 import UpdateModal from "./update.modal";
-
+import { ToastContainer, toast } from "react-toastify";
 interface IProps {
   blogs: IBlog[];
 }
@@ -16,6 +17,26 @@ const AppTable = (props: IProps) => {
   const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
   // Lấy data
   const { blogs } = props;
+  const handleDelete = (id: number) => {
+    if (confirm(`Do you want to delete this blog? (id = ${id}`)) {
+      fetch(`http://localhost:8000/blogs/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            // fetch lại data khi ấn save
+            mutate("http://localhost:8000/blogs");
+          } else {
+            toast.error("Delete a blog failed");
+          }
+        });
+    }
+  };
   return (
     <>
       {" "}
@@ -49,13 +70,16 @@ const AppTable = (props: IProps) => {
                   variant="warning"
                   className="mx-3"
                   onClick={() => {
+                    // set data chính bằng blog hiện tại
                     setBlog(item);
                     setShowModalUpdate(true);
                   }}
                 >
                   Edit
                 </Button>
-                <Button variant="danger">Delete</Button>
+                <Button variant="danger" onClick={() => handleDelete(item.id)}>
+                  Delete
+                </Button>
               </td>
             </tr>
           ))}
