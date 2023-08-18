@@ -27,3 +27,5 @@ Thư mục :
 
 tất cả "component" khai báo bên trong thư mục "app" sẽ là SERVER
 COMPONENT
+
+Fetcher là trả ra dữ liệu dưới dạng đối tượng
